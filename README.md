@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prowider Mini Lead Distribution System
 
-## Getting Started
+A full-stack lead distribution platform built using Next.js, PostgreSQL, and Prisma.
 
-First, run the development server:
+## Live Demo
+
+(https://prowider-mini-lead-distribution-sys-ochre.vercel.app/)
+
+---
+
+# Features
+
+- Customer service request form
+- Automatic provider lead assignment
+- Fair round-robin allocation
+- Mandatory provider assignment rules
+- Monthly provider quota tracking
+- Duplicate lead prevention
+- Real-time dashboard updates
+- Webhook idempotency handling
+- Concurrency testing tools
+- PostgreSQL database persistence
+
+---
+
+# Tech Stack
+
+- Next.js
+- TypeScript
+- PostgreSQL
+- Prisma ORM
+- Tailwind CSS
+- Vercel
+- Neon PostgreSQL
+
+---
+
+# Routes
+
+## Public Routes
+
+### `/`
+Homepage
+
+### `/request-service`
+Customer lead submission form
+
+### `/dashboard`
+Provider dashboard with live updates
+
+### `/test-tools`
+Testing utilities
+
+---
+
+# API Routes
+
+### `POST /api/leads/create`
+Create lead and distribute providers
+
+### `GET /api/dashboard`
+Fetch provider dashboard data
+
+### `POST /api/test/reset-quota`
+Reset provider quotas
+
+### `POST /api/test/webhook`
+Webhook simulation with idempotency
+
+### `POST /api/test/generate-leads`
+Generate concurrent leads
+
+---
+
+# Allocation Logic
+
+## Mandatory Rules
+
+- Service 1 → Provider 1 always assigned
+- Service 2 → Provider 5 always assigned
+- Service 3 → Provider 1 and Provider 4 always assigned
+
+## Fair Distribution
+
+Remaining providers are assigned using persistent round-robin allocation.
+
+Allocation state is stored in the database to ensure:
+- fairness over time
+- persistence after restart
+- no repeated favoritism
+
+---
+
+# Concurrency Handling
+
+Lead creation uses Prisma database transactions to ensure:
+- atomic operations
+- assignment consistency
+- quota correctness
+
+---
+
+# Webhook Idempotency
+
+Webhook events are stored using unique event IDs.
+
+Repeated webhook calls with the same event ID do not duplicate effects.
+
+---
+
+# Setup Instructions
+
+```bash
+npm install
+```
+
+Create `.env`
+
+```env
+DATABASE_URL=your_database_url
+```
+
+Run migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+Seed database:
+
+```bash
+npx tsx prisma/seed.ts
+```
+
+Start server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
